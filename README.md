@@ -2,6 +2,21 @@
 
 Este projeto implementa um Jammer utilizando um módulo ESP32 e dois transceptores nRF24L01, conforme o diagrama de fiação do Wokwi.
 
+## 🚀 Web Flasher (Instalação Rápida)
+
+A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizando o **Web Flasher** diretamente no seu navegador.
+
+**Requisitos:**
+1.  Um navegador compatível com a API Web Serial (Chrome, Edge, Opera).
+2.  O seu ESP32 conectado ao computador via cabo USB.
+
+**Instruções:**
+1.  **Acesse o Web Flasher:** [Clique Aqui para Acessar o Web Flasher](https://newbox22.github.io/jammer-esp32/webflasher.html) (O link será ativado após a configuração do GitHub Pages).
+2.  Clique no botão **"🔄 Atualizar"** e selecione a porta serial do seu ESP32.
+3.  Clique no botão **"📥 Gravar Firmware"** e aguarde o processo ser concluído.
+
+---
+
 ## Diagrama de Fiação
 
 O circuito utiliza um ESP32 Breakout e dois módulos nRF24L01 Breakout, cada um com seu respectivo capacitor de desacoplamento para garantir a estabilidade da alimentação.

@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Jammer - Web Flasher</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .section {
+            margin-bottom: 25px;
+        }
+
+        .section-title {
+            color: #333;
+            font-weight: 600;
+            margin-bottom: 12px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .port-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        select {
+            flex: 1;
+            padding: 10px 12px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:hover {
+            border-color: #667eea;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        button {
+            padding: 10px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        button:hover:not(:disabled) {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .log {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 12px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            max-height: 200px;
+            overflow-y: auto;
+            color: #333;
+            line-height: 1.5;
+        }
+
+        .log-entry {
+            margin-bottom: 5px;
+        }
+
+        .log-entry.success {
+            color: #27ae60;
+        }
+
+        .log-entry.error {
+            color: #e74c3c;
+        }
+
+        .log-entry.info {
+            color: #3498db;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        .status {
+            font-size: 13px;
+            color: #666;
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .status.success {
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        .status.error {
+            color: #e74c3c;
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: #ecf0f1;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        .info-box strong {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 ESP32 Jammer</h1>
+        <p class="subtitle">Web Flasher - Grave o firmware via USB</p>
+
+        <div class="info-box">
+            <strong>⚠️ Importante:</strong> Conecte o ESP32 via USB antes de iniciar o processo de gravação.
+        </div>
+
+        <div class="section">
+            <div class="section-title">Porta Serial</div>
+            <div class="port-selector">
+                <select id="portSelect">
+                    <option value="">Selecione a porta...</option>
+                </select>
+                <button onclick="refreshPorts()">🔄 Atualizar</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Firmware</div>
+            <div class="button-group">
+                <button onclick="flashFirmware()" id="flashBtn">📥 Gravar Firmware</button>
+                <button onclick="eraseFirmware()" id="eraseBtn">🗑️ Apagar Flash</button>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Log</div>
+            <div class="log" id="log"></div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="status" id="status"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/esptool-js@0.4.0/bundle.js"></script>
+    <script>
+        const { ESPLoader, CHIP_DEFS } = window;
+
+        let port = null;
+        let esploader = null;
+
+        const logElement = document.getElementById('log');
+        const statusElement = document.getElementById('status');
+        const progressFill = document.getElementById('progressFill');
+        const flashBtn = document.getElementById('flashBtn');
+        const eraseBtn = document.getElementById('eraseBtn');
+        const portSelect = document.getElementById('portSelect');
+
+        function log(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logElement.appendChild(entry);
+            logElement.scrollTop = logElement.scrollHeight;
+        }
+
+        function setStatus(message, type = 'info') {
+            statusElement.textContent = message;
+            statusElement.className = `status ${type}`;
+        }
+
+        function setProgress(percent) {
+            progressFill.style.width = percent + '%';
+        }
+
+        async function refreshPorts() {
+            try {
+                const ports = await navigator.serial.getPorts();
+                portSelect.innerHTML = '<option value="">Selecione a porta...</option>';
+                
+                if (ports.length === 0) {
+                    log('Nenhuma porta serial encontrada', 'error');
+                    return;
+                }
+
+                ports.forEach((p, index) => {
+                    const option = document.createElement('option');
+                    option.value = index;
+                    option.textContent = `Porta ${index + 1}`;
+                    portSelect.appendChild(option);
+                });
+
+                log(`${ports.length} porta(s) serial encontrada(s)`, 'success');
+            } catch (error) {
+                log(`Erro ao listar portas: ${error.message}`, 'error');
+            }
+        }
+
+        async function flashFirmware() {
+            if (!portSelect.value) {
+                setStatus('Selecione uma porta serial', 'error');
+                return;
+            }
+
+            flashBtn.disabled = true;
+            eraseBtn.disabled = true;
+            setProgress(0);
+            setStatus('Conectando...', 'info');
+            log('Iniciando gravação do firmware...', 'info');
+
+            try {
+                const ports = await navigator.serial.getPorts();
+                port = ports[parseInt(portSelect.value)];
+
+                if (!port.writable) {
+                    await port.open({ baudRate: 115200 });
+                }
+
+                esploader = new ESPLoader({
+                    port: port,
+                    baudrate: 115200,
+                    terminal: {
+                        clean: () => {},
+                        writeLine: (data) => log(data, 'info'),
+                        write: (data) => log(data, 'info')
+                    }
+                });
+
+                setStatus('Conectando ao ESP32...', 'info');
+                log('Conectando ao ESP32...', 'info');
+                await esploader.main();
+
+                const chipName = esploader.getChipDescription();
+                log(`Chip detectado: ${chipName}`, 'success');
+                setStatus(`Chip: ${chipName}`, 'info');
+
+                setProgress(20);
+                log('Baixando firmware...', 'info');
+
+                const response = await fetch('firmware.bin');
+                const firmware = await response.arrayBuffer();
+                const firmwareArray = new Uint8Array(firmware);
+
+                setProgress(40);
+                log(`Tamanho do firmware: ${(firmwareArray.length / 1024).toFixed(2)} KB`, 'info');
+
+                setProgress(50);
+                log('Gravando firmware...', 'info');
+
+                const fileArray = [
+                    { data: firmwareArray, address: 0x10000 }
+                ];
+
+                await esploader.writeFlash({
+                    fileArray: fileArray,
+                    flashMode: 'dio',
+                    flashFreq: '40m',
+                    flashSize: 'keep',
+                    reportProgress: (filewritten, index, total) => {
+                        const percent = 50 + (filewritten / total) * 40;
+                        setProgress(Math.min(percent, 90));
+                    },
+                    timeout: 15000
+                });
+
+                setProgress(95);
+                log('Finalizando...', 'info');
+
+                await esploader.hardReset();
+
+                setProgress(100);
+                setStatus('✅ Firmware gravado com sucesso!', 'success');
+                log('Firmware gravado com sucesso!', 'success');
+
+            } catch (error) {
+                setStatus(`❌ Erro: ${error.message}`, 'error');
+                log(`Erro: ${error.message}`, 'error');
+            } finally {
+                flashBtn.disabled = false;
+                eraseBtn.disabled = false;
+            }
+        }
+
+        async function eraseFirmware() {
+            if (!portSelect.value) {
+                setStatus('Selecione uma porta serial', 'error');
+                return;
+            }
+
+            flashBtn.disabled = true;
+            eraseBtn.disabled = true;
+            setProgress(0);
+            setStatus('Conectando...', 'info');
+            log('Iniciando limpeza da memória flash...', 'info');
+
+            try {
+                const ports = await navigator.serial.getPorts();
+                port = ports[parseInt(portSelect.value)];
+
+                if (!port.writable) {
+                    await port.open({ baudRate: 115200 });
+                }
+
+                esploader = new ESPLoader({
+                    port: port,
+                    baudrate: 115200,
+                    terminal: {
+                        clean: () => {},
+                        writeLine: (data) => log(data, 'info'),
+                        write: (data) => log(data, 'info')
+                    }
+                });
+
+                setStatus('Conectando ao ESP32...', 'info');
+                log('Conectando ao ESP32...', 'info');
+                await esploader.main();
+
+                const chipName = esploader.getChipDescription();
+                log(`Chip detectado: ${chipName}`, 'success');
+
+                setProgress(50);
+                log('Apagando flash...', 'info');
+                await esploader.eraseFlash();
+
+                setProgress(95);
+                log('Finalizando...', 'info');
+
+                await esploader.hardReset();
+
+                setProgress(100);
+                setStatus('✅ Flash apagado com sucesso!', 'success');
+                log('Flash apagado com sucesso!', 'success');
+
+            } catch (error) {
+                setStatus(`❌ Erro: ${error.message}`, 'error');
+                log(`Erro: ${error.message}`, 'error');
+            } finally {
+                flashBtn.disabled = false;
+                eraseBtn.disabled = false;
+            }
+        }
+
+        // Atualizar portas ao carregar a página
+        window.addEventListener('load', refreshPorts);
+
+        // Atualizar portas quando uma porta é conectada/desconectada
+        navigator.serial.addEventListener('connect', refreshPorts);
+        navigator.serial.addEventListener('disconnect', refreshPorts);
+    </script>
+</body>
+</html>
