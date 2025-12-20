@@ -11,8 +11,8 @@ A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizand
 2.  O seu ESP32 conectado ao computador via cabo USB.
 
 **Instruções:**
-1.  **Acesse o Web Flasher:** [Clique Aqui para Acessar o Web Flasher](https://newbox22.github.io/jammer-esp32/webflasher.html) (O link será ativado após a configuração do GitHub Pages).
-2.  Clique no botão **"🔄 Atualizar"** e selecione a porta serial do seu ESP32.
+1.  **Acesse o Web Flasher:** [Clique Aqui para Acessar o Web Flasher](https://newbox22.github.io/jammer-esp32/flasher/webflasher.html)
+2.  Clique no botão **"🔌 Conectar à Porta Serial"** e selecione a porta serial do seu ESP32.
 3.  Clique no botão **"📥 Gravar Firmware"** e aguarde o processo ser concluído.
 
 ---
