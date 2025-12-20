@@ -1,0 +1,50 @@
+name: Build Firmware and Update Web Flasher
+
+on:
+  push:
+    branches:
+      - dev # Executa quando há um push para a branch 'dev'
+
+jobs:
+  build_and_update:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }} # Garante que estamos na branch correta (dev)
+          token: ${{ secrets.GITHUB_TOKEN }} # Permissão para committar de volta
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install PlatformIO Core
+        run: pip install platformio
+
+      - name: Build PlatformIO Project
+        run: pio run
+
+      - name: Copy new firmware.bin
+        # O arquivo compilado está em .pio/build/esp32dev/firmware.bin
+        run: cp .pio/build/esp32dev/firmware.bin firmware.bin
+
+      - name: Commit and Push new firmware.bin
+        run: |
+          # Configura o Git para o commit automático
+          git config user.name "GitHub Actions Bot"
+          git config user.email "actions@github.com"
+          
+          # Verifica se o arquivo foi alterado
+          if git diff --exit-code firmware.bin; then
+            echo "firmware.bin não foi alterado. Pulando commit."
+          else
+            # Adiciona e committa o novo binário
+            git add firmware.bin
+            git commit -m "chore(firmware): Automated build and update of firmware.bin [skip ci]"
+            
+            # Envia para a branch 'dev'
+            git push origin ${{ github.ref_name }}
+          fi
