@@ -19,13 +19,27 @@ A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizand
 
 ## Diagrama de Fiação
 
-O circuito utiliza um ESP32 Breakout e dois módulos nRF24L01 Breakout, cada um com seu respectivo capacitor de desacoplamento para garantir a estabilidade da alimentação.
+O circuito utiliza um ESP32 e dois módulos nRF24L0, cada um com seu respectivo capacitor de desacoplamento para garantir a estabilidade da alimentação.
 
 **Link do Projeto Wokwi:** [Clique Aqui!](https://wokwi.com/projects/450785045943583745)
 
-A imagem a seguir ilustra a fiação completa:
+A imagem a seguir ilustra a fiação completa: 
 
 ![Diagrama de Fiação do ESP32 Jammer](https://github.com/NeWBoX22/jammer-esp32/blob/main/image.png)
+
+**Atenção:** No diagrama, os módulos nRF24L01 e o ESP32 estão representados pela vista traseira (onde os pinos de contato estão visíveis) para facilitar a visualização das conexões. Certifique-se de conectar os fios aos pinos corretos na montagem física.
+
+## Mapeamento Físico dos Módulos
+
+Para garantir que a fiação do diagrama Wokwi corresponda à lógica do código (`main.cpp`), a posição física dos módulos nRF24L01 é importante:
+
+| Posição no Diagrama | Pinos de Controle (CE/CSN) | Módulo no Código |
+| :--- | :--- | :--- |
+| **Módulo da Esquerda** | `GPIO16` / `GPIO15` | **Módulo 1** |
+| **Módulo da Direita** | `GPIO4` / `GPIO2` | **Módulo 2** |
+
+**Nota:** Se você deseja inverter a posição física dos módulos, você deve ajustar as definições de pinos no arquivo `src/main.cpp` para que o Módulo 1 (código) corresponda ao módulo que você deseja que seja o principal.
+
 
 ## Conexões de Pinos
 
@@ -65,8 +79,8 @@ Este módulo compartilha os pinos SPI (SCK, MOSI, MISO) com o Módulo #1, mas ut
 | :--- | :--- | :--- |
 | `VCC` | `3V3` | Alimentação 3.3V |
 | `GND` | `GND` | Terra |
-| `CE` | `GPIO16` (RX2) | Chip Enable |
-| `CSN` | `GPIO15` (D15) | Chip Select Not |
+| `CE` | `GPIO4` (D4) | Chip Enable |
+| `CSN` | `GPIO2` (D2) | Chip Select Not |
 | `SCK` | `GPIO14` (D14) | Serial Clock (SPI) |
 | `MOSI` | `GPIO13` (D13) | Master Out Slave In (SPI) |
 | `MISO` | `GPIO12` (D12) | Master In Slave Out (SPI) |
