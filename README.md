@@ -19,7 +19,7 @@ A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizand
 
 ## Diagrama de Fiação
 
-O circuito utiliza um ESP32 e dois módulos nRF24L0, cada um com seu respectivo capacitor de desacoplamento para garantir a estabilidade da alimentação.
+O circuito utiliza um ESP32 e dois módulos nRF24L01, cada um com seu respectivo capacitor de desacoplamento para garantir a estabilidade da alimentação.
 
 **Link do Projeto Wokwi:** [Clique Aqui!](https://wokwi.com/projects/450785045943583745)
 
