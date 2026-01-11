@@ -30,7 +30,14 @@
             padding: 40px;
         }
 
-        h1 {
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 30px;
+        }
+
+        .title-section h1 {
             color: #333;
             margin-bottom: 10px;
             font-size: 28px;
@@ -38,8 +45,34 @@
 
         .subtitle {
             color: #666;
-            margin-bottom: 30px;
             font-size: 14px;
+        }
+
+        .language-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .lang-btn {
+            padding: 8px 12px;
+            background: #f0f4ff;
+            color: #667eea;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .lang-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
         }
 
         .section {
@@ -190,31 +223,39 @@
 </head>
 <body>
     <div class="container">
-        <h1>🔧 ESP32 Jammer</h1>
-        <p class="subtitle">Web Flasher - Grave o firmware via USB</p>
+        <div class="header">
+            <div class="title-section">
+                <h1>🔧 <span data-i18n="title">ESP32 Jammer</span></h1>
+                <p class="subtitle" data-i18n="subtitle">Web Flasher - Grave o firmware via USB</p>
+            </div>
+            <div class="language-selector">
+                <button class="lang-btn active" onclick="setLanguage('pt-BR')">PT</button>
+                <button class="lang-btn" onclick="setLanguage('en-US')">EN</button>
+            </div>
+        </div>
 
         <div class="info-box">
-            <strong>⚠️ Importante:</strong> Conecte o ESP32 via USB antes de clicar em "Conectar à Porta Serial".
+            <strong>⚠️ <span data-i18n="important">Importante</span>:</strong> <span data-i18n="warning">Conecte o ESP32 via USB antes de clicar em "Conectar à Porta Serial".</span>
         </div>
 
         <div class="section">
-            <div class="section-title">Conexão</div>
+            <div class="section-title" data-i18n="connection">Conexão</div>
             <div id="portInfo" class="port-info disconnected">
-                ❌ Nenhuma porta conectada
+                ❌ <span data-i18n="noPort">Nenhuma porta conectada</span>
             </div>
-            <button onclick="connectPort()" id="connectBtn">🔌 Conectar à Porta Serial</button>
+            <button onclick="connectPort()" id="connectBtn" data-i18n="connectBtn">🔌 Conectar à Porta Serial</button>
         </div>
 
         <div class="section">
-            <div class="section-title">Firmware</div>
+            <div class="section-title" data-i18n="firmware">Firmware</div>
             <div class="button-group">
-                <button onclick="flashFirmware()" id="flashBtn" disabled>📥 Gravar Firmware</button>
-                <button onclick="eraseFirmware()" id="eraseBtn" disabled>🗑️ Apagar Flash</button>
+                <button onclick="flashFirmware()" id="flashBtn" disabled data-i18n="flashBtn">📥 Gravar Firmware</button>
+                <button onclick="eraseFirmware()" id="eraseBtn" disabled data-i18n="eraseBtn">🗑️ Apagar Flash</button>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">Log</div>
+            <div class="section-title" data-i18n="log">Log</div>
             <div class="log" id="log"></div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
@@ -227,6 +268,83 @@
     <script>
         const { ESPLoader, CHIP_DEFS } = window;
 
+        // Dicionário de traduções
+        const translations = {
+            'pt-BR': {
+                'title': 'ESP32 Jammer',
+                'subtitle': 'Web Flasher - Grave o firmware via USB',
+                'important': 'Importante',
+                'warning': 'Conecte o ESP32 via USB antes de clicar em "Conectar à Porta Serial".',
+                'connection': 'Conexão',
+                'noPort': 'Nenhuma porta conectada',
+                'connectBtn': '🔌 Conectar à Porta Serial',
+                'disconnectBtn': '🔌 Desconectar',
+                'firmware': 'Firmware',
+                'flashBtn': '📥 Gravar Firmware',
+                'eraseBtn': '🗑️ Apagar Flash',
+                'log': 'Log',
+                'portConnected': '✅ Porta conectada e pronta',
+                'portDisconnected': 'Nenhuma porta conectada',
+                'connecting': 'Conectando ao ESP32...',
+                'selectingPort': 'Porta serial selecionada',
+                'disconnectingPort': 'Porta desconectada',
+                'connectError': 'Erro ao conectar',
+                'noPortConnected': 'Nenhuma porta conectada',
+                'startingFlash': 'Iniciando gravação do firmware...',
+                'connectingESP32': 'Conectando ao ESP32...',
+                'chipDetected': 'Chip detectado',
+                'downloadingFirmware': 'Baixando firmware...',
+                'downloadError': 'Erro ao baixar firmware',
+                'firmwareSize': 'Tamanho do firmware',
+                'flashingFirmware': 'Gravando firmware...',
+                'finalizing': 'Finalizando...',
+                'flashSuccess': '✅ Firmware gravado com sucesso!',
+                'flashSuccessLog': 'Firmware gravado com sucesso!',
+                'flashError': 'Erro',
+                'startingErase': 'Iniciando limpeza da memória flash...',
+                'erasingFlash': 'Apagando flash...',
+                'eraseSuccess': '✅ Flash apagado com sucesso!',
+                'eraseSuccessLog': 'Flash apagado com sucesso!'
+            },
+            'en-US': {
+                'title': 'ESP32 Jammer',
+                'subtitle': 'Web Flasher - Flash firmware via USB',
+                'important': 'Important',
+                'warning': 'Connect the ESP32 via USB before clicking "Connect to Serial Port".',
+                'connection': 'Connection',
+                'noPort': 'No port connected',
+                'connectBtn': '🔌 Connect to Serial Port',
+                'disconnectBtn': '🔌 Disconnect',
+                'firmware': 'Firmware',
+                'flashBtn': '📥 Flash Firmware',
+                'eraseBtn': '🗑️ Erase Flash',
+                'log': 'Log',
+                'portConnected': '✅ Port connected and ready',
+                'portDisconnected': 'No port connected',
+                'connecting': 'Connecting to ESP32...',
+                'selectingPort': 'Serial port selected',
+                'disconnectingPort': 'Port disconnected',
+                'connectError': 'Connection error',
+                'noPortConnected': 'No port connected',
+                'startingFlash': 'Starting firmware flashing...',
+                'connectingESP32': 'Connecting to ESP32...',
+                'chipDetected': 'Chip detected',
+                'downloadingFirmware': 'Downloading firmware...',
+                'downloadError': 'Error downloading firmware',
+                'firmwareSize': 'Firmware size',
+                'flashingFirmware': 'Flashing firmware...',
+                'finalizing': 'Finalizing...',
+                'flashSuccess': '✅ Firmware flashed successfully!',
+                'flashSuccessLog': 'Firmware flashed successfully!',
+                'flashError': '❌ Error',
+                'startingErase': 'Starting flash memory cleanup...',
+                'erasingFlash': 'Erasing flash...',
+                'eraseSuccess': '✅ Flash erased successfully!',
+                'eraseSuccessLog': 'Flash erased successfully!'
+            }
+        };
+
+        let currentLanguage = 'pt-BR';
         let port = null;
         let esploader = null;
 
@@ -237,6 +355,48 @@
         const eraseBtn = document.getElementById('eraseBtn');
         const connectBtn = document.getElementById('connectBtn');
         const portInfo = document.getElementById('portInfo');
+
+        // Função para obter tradução
+        function t(key) {
+            return translations[currentLanguage][key] || translations['pt-BR'][key] || key;
+        }
+
+        // Função para definir idioma
+        function setLanguage(lang) {
+            currentLanguage = lang;
+            localStorage.setItem('language', lang);
+            
+            // Atualizar botões de idioma
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Atualizar todos os elementos com data-i18n
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (element.tagName === 'BUTTON') {
+                    element.textContent = t(key);
+                } else {
+                    element.textContent = t(key);
+                }
+            });
+
+            // Atualizar textos dinâmicos
+            updatePortInfo();
+        }
+
+        // Carregar idioma salvo
+        function loadSavedLanguage() {
+            const saved = localStorage.getItem('language') || 'pt-BR';
+            currentLanguage = saved;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.textContent.trim() === (saved === 'pt-BR' ? 'PT' : 'EN')) {
+                    btn.classList.add('active');
+                }
+            });
+        }
 
         function log(message, type = 'info') {
             const entry = document.createElement('div');
@@ -258,16 +418,16 @@
         function updatePortInfo() {
             if (port) {
                 portInfo.className = 'port-info connected';
-                portInfo.textContent = '✅ Porta conectada e pronta';
+                portInfo.innerHTML = '✅ <span>' + t('portConnected') + '</span>';
                 flashBtn.disabled = false;
                 eraseBtn.disabled = false;
-                connectBtn.textContent = '🔌 Desconectar';
+                connectBtn.textContent = t('disconnectBtn');
             } else {
                 portInfo.className = 'port-info disconnected';
-                portInfo.textContent = '❌ Nenhuma porta conectada';
+                portInfo.innerHTML = '❌ <span>' + t('portDisconnected') + '</span>';
                 flashBtn.disabled = true;
                 eraseBtn.disabled = true;
-                connectBtn.textContent = '🔌 Conectar à Porta Serial';
+                connectBtn.textContent = t('connectBtn');
             }
         }
 
@@ -277,25 +437,25 @@
                     // Desconectar
                     await port.close();
                     port = null;
-                    log('Porta desconectada', 'info');
+                    log(t('disconnectingPort'), 'info');
                     updatePortInfo();
                     return;
                 }
 
                 // Abrir o seletor nativo de porta serial do navegador
                 port = await navigator.serial.requestPort();
-                log('Porta serial selecionada', 'success');
+                log(t('selectingPort'), 'success');
                 updatePortInfo();
             } catch (error) {
                 if (error.name !== 'NotFoundError') {
-                    log(`Erro ao conectar: ${error.message}`, 'error');
+                    log(`${t('connectError')}: ${error.message}`, 'error');
                 }
             }
         }
 
         async function flashFirmware() {
             if (!port) {
-                setStatus('Nenhuma porta conectada', 'error');
+                setStatus(t('noPortConnected'), 'error');
                 return;
             }
 
@@ -303,8 +463,8 @@
             eraseBtn.disabled = true;
             connectBtn.disabled = true;
             setProgress(0);
-            setStatus('Conectando ao ESP32...', 'info');
-            log('Iniciando gravação do firmware...', 'info');
+            setStatus(t('connecting'), 'info');
+            log(t('startingFlash'), 'info');
 
             try {
                 if (!port.writable) {
@@ -321,28 +481,28 @@
                     }
                 });
 
-                log('Conectando ao ESP32...', 'info');
+                log(t('connectingESP32'), 'info');
                 await esploader.main();
 
                 const chipName = esploader.getChipDescription();
-                log(`Chip detectado: ${chipName}`, 'success');
-                setStatus(`Chip: ${chipName}`, 'info');
+                log(`${t('chipDetected')}: ${chipName}`, 'success');
+                setStatus(`${t('chipDetected')}: ${chipName}`, 'info');
 
                 setProgress(20);
-                log('Baixando firmware...', 'info');
+                log(t('downloadingFirmware'), 'info');
 
                 const response = await fetch('firmware.bin');
                 if (!response.ok) {
-                    throw new Error(`Erro ao baixar firmware: ${response.statusText}`);
+                    throw new Error(`${t('downloadError')}: ${response.statusText}`);
                 }
                 const firmware = await response.arrayBuffer();
                 const firmwareArray = new Uint8Array(firmware);
 
                 setProgress(40);
-                log(`Tamanho do firmware: ${(firmwareArray.length / 1024).toFixed(2)} KB`, 'info');
+                log(`${t('firmwareSize')}: ${(firmwareArray.length / 1024).toFixed(2)} KB`, 'info');
 
                 setProgress(50);
-                log('Gravando firmware...', 'info');
+                log(t('flashingFirmware'), 'info');
 
                 const fileArray = [
                     { data: firmwareArray, address: 0x10000 }
@@ -361,17 +521,17 @@
                 });
 
                 setProgress(95);
-                log('Finalizando...', 'info');
+                log(t('finalizing'), 'info');
 
                 await esploader.hardReset();
 
                 setProgress(100);
-                setStatus('✅ Firmware gravado com sucesso!', 'success');
-                log('Firmware gravado com sucesso!', 'success');
+                setStatus(t('flashSuccess'), 'success');
+                log(t('flashSuccessLog'), 'success');
 
             } catch (error) {
-                setStatus(`❌ Erro: ${error.message}`, 'error');
-                log(`Erro: ${error.message}`, 'error');
+                setStatus(`${t('flashError')}: ${error.message}`, 'error');
+                log(`${t('flashError')}: ${error.message}`, 'error');
             } finally {
                 flashBtn.disabled = false;
                 eraseBtn.disabled = false;
@@ -381,7 +541,7 @@
 
         async function eraseFirmware() {
             if (!port) {
-                setStatus('Nenhuma porta conectada', 'error');
+                setStatus(t('noPortConnected'), 'error');
                 return;
             }
 
@@ -389,8 +549,8 @@
             eraseBtn.disabled = true;
             connectBtn.disabled = true;
             setProgress(0);
-            setStatus('Conectando ao ESP32...', 'info');
-            log('Iniciando limpeza da memória flash...', 'info');
+            setStatus(t('connecting'), 'info');
+            log(t('startingErase'), 'info');
 
             try {
                 if (!port.writable) {
@@ -407,28 +567,28 @@
                     }
                 });
 
-                log('Conectando ao ESP32...', 'info');
+                log(t('connectingESP32'), 'info');
                 await esploader.main();
 
                 const chipName = esploader.getChipDescription();
-                log(`Chip detectado: ${chipName}`, 'success');
+                log(`${t('chipDetected')}: ${chipName}`, 'success');
 
                 setProgress(50);
-                log('Apagando flash...', 'info');
+                log(t('erasingFlash'), 'info');
                 await esploader.eraseFlash();
 
                 setProgress(95);
-                log('Finalizando...', 'info');
+                log(t('finalizing'), 'info');
 
                 await esploader.hardReset();
 
                 setProgress(100);
-                setStatus('✅ Flash apagado com sucesso!', 'success');
-                log('Flash apagado com sucesso!', 'success');
+                setStatus(t('eraseSuccess'), 'success');
+                log(t('eraseSuccessLog'), 'success');
 
             } catch (error) {
-                setStatus(`❌ Erro: ${error.message}`, 'error');
-                log(`Erro: ${error.message}`, 'error');
+                setStatus(`${t('flashError')}: ${error.message}`, 'error');
+                log(`${t('flashError')}: ${error.message}`, 'error');
             } finally {
                 flashBtn.disabled = false;
                 eraseBtn.disabled = false;
@@ -437,6 +597,7 @@
         }
 
         // Inicializar a interface
+        loadSavedLanguage();
         updatePortInfo();
     </script>
 </body>
