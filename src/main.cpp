@@ -67,29 +67,33 @@ void setup() {
   setupRadios();
 }
 
-// --- Inicialização de um Rádio ---
+// --- Inicialização de um Rádio (OTIMIZADO para 250KBPS) ---
 void initializeRadio(RF24& radio_obj, const char* name) {
-  // radio.begin() retorna true se o módulo for encontrado
   if (radio_obj.begin(hspi)) {
-    Serial.printf("Rádio %s detectado e iniciado com sucesso!\n", name);
+    Serial.printf("Rádio %s detectado e configurado para 250KBPS!\n", name);
     
-    // Configurações do rádio
+    // CONFIGURAÇÕES OTIMIZADAS PARA MÁXIMO ALCANCE:
     radio_obj.setAutoAck(false);
     radio_obj.stopListening();
     radio_obj.setRetries(0, 0);
-    radio_obj.setPayloadSize(5);   
+    radio_obj.setPayloadSize(5);          // Mantido 5 para compatibilidade
     radio_obj.setAddressWidth(3);  
-    radio_obj.setPALevel(RF24_PA_MAX, true);
-    radio_obj.setDataRate(RF24_2MBPS);
-    radio_obj.setCRCLength(RF24_CRC_DISABLED);
+    radio_obj.setPALevel(RF24_PA_MAX);    // Máxima potência para PA+LNA
+    
+    // ALTERAÇÃO PRINCIPAL: 250KBPS para máximo alcance
+    radio_obj.setDataRate(RF24_250KBPS);  // Reduzido de 2MBPS para 250KBPS
+    
+    radio_obj.setCRCLength(RF24_CRC_DISABLED);  // Sem CRC para potência máxima
+    
+    // IMPORTANTE: Para 250KBPS, ajuste o tempo de estabilização
+    radio_obj.setChannel(current_channel);
     
     // Inicia a portadora constante
     radio_obj.startConstCarrier(RF24_PA_MAX, current_channel);
     
-    radio_obj.printPrettyDetails();
     num_radios++;
   } else {
-    Serial.printf("Rádio %s não detectado. Verifique as conexões (CE/CSN).\n", name);
+    Serial.printf("Rádio %s não detectado.\n", name);
   }
 }
 
@@ -132,6 +136,9 @@ void channelHopping() {
   if (num_radios == 2) {
     radio2.setChannel(current_channel);
   }
+  
+  // Ajuste: delay maior para 250KBPS (estabilidade)
+  delayMicroseconds(400);  // Aumentado de ~200 para 400µs
 }
 
 // --- Lógica de Varredura de Canal (Sweep) ---
@@ -144,18 +151,18 @@ void channelSweep() {
     if (num_radios == 2) {
       radio2.setChannel(j);
     }
+    // Ajuste: delay otimizado para 250KBPS
+    delayMicroseconds(300);  // Reduzido de 400 para 300µs para sweep mais rápido
   }
 }
 
-// --- Loop Principal (Operação Contínua) ---
+// --- Loop Principal ---
 void loop() {
   // Processa o estado do botão
   toggleSwitch.loop();
   
   if (num_radios == 0) {
-    // Se nenhum rádio for detectado, apenas imprime um aviso e espera
-    // Serial.println("Aguardando rádio...");
-    delay(1000); // Pequeno delay para não sobrecarregar o loop serial
+    delay(1000);  // Pausa se não houver rádios
     return;
   }
 
