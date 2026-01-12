@@ -1,8 +1,20 @@
+## Aviso Importante sobre o Espectro de Frequência
+
+É crucial entender que este dispositivo, ao operar na banda de 2.4 GHz, **não interfere exclusivamente com sinais Bluetooth**. A banda de 2.4 GHz é amplamente utilizada por uma variedade de tecnologias sem fio, incluindo:
+
+*   **Wi-Fi (802.11b/g/n)**
+*   **Bluetooth (Clássico e Low Energy)**
+*   **Outros dispositivos** como telefones sem fio, babás eletrônicas, drones e diversos dispositivos IoT.
+
+Ao ativar a funcionalidade de interferência, o dispositivo afetará todos os sinais que operam nos canais sintonizados dentro desta banda, independentemente do protocolo. Tenha isso em mente ao utilizar o sistema.
+
+---
+
 # ESP32 Jammer (Dual nRF24L01)
 
 Este projeto implementa um Jammer utilizando um módulo ESP32 e dois transceptores nRF24L01, conforme o diagrama de fiação do Wokwi.
 
-## 🚀 Web Flasher (Instalação Rápida)
+## Web Flasher (Instalação Rápida)
 
 A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizando o **Web Flasher** diretamente no seu navegador.
 
@@ -12,10 +24,9 @@ A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizand
 
 **Instruções:**
 1.  **Acesse o Web Flasher:** [Clique Aqui para Acessar o Web Flasher](https://newbox22.github.io/jammer-esp32/flasher/webflasher.html)
-2.  Clique no botão **"🔌 Conectar à Porta Serial"** e selecione a porta serial do seu ESP32.
-3.  Clique no botão **"📥 Gravar Firmware"** e aguarde o processo ser concluído.
+2.  Clique no botão **"Conectar à Porta Serial"** e selecione a porta serial do seu ESP32.
+3.  Clique no botão **"Gravar Firmware"** e aguarde o processo ser concluído.
 
----
 
 ## Diagrama de Fiação
 
