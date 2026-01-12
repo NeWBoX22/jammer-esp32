@@ -1,6 +1,5 @@
-// Código Otimizado para ESP32 e PlatformIO com Detecção Automática de Rádio e Status LED
-// Objetivo: Operação contínua de varredura/salto de canal, suportando 1 ou 2 módulos nRF24L01+,
-// com feedback visual via LED sobre a detecção dos módulos.
+// Código Otimizado para ESP32 e PlatformIO com Detecção Automática de Rádio
+// Objetivo: Operação contínua de varredura/salto de canal, suportando 1 ou 2 módulos nRF24L01+.
 
 #include <Arduino.h>
 #include <SPI.h>
@@ -26,9 +25,6 @@
 // Pino do botão (ezButton)
 #define TOGGLE_BUTTON_PIN 33
 
-// Pino do LED de status (LED embutido na maioria das placas ESP32 é GPIO2)
-#define LED_BUILTIN 2
-
 // --- Variáveis Globais ---
 SPIClass *hspi = nullptr; 
 RF24 radio1(RF24_CE_PIN_1, RF24_CSN_PIN_1);
@@ -49,7 +45,6 @@ void initializeRadio(RF24& radio_obj, const char* name);
 void setupRadios();
 void channelHopping();
 void channelSweep();
-void blinkLED(int count, int delay_ms);
 
 // --- Setup ---
 void setup() {
@@ -61,9 +56,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Iniciando ESP32 e nRF24L01+...");
   
-  // Configuração do pino do LED
-  pinMode(LED_BUILTIN, OUTPUT);
-
   // Configuração do botão
   toggleSwitch.setDebounceTime(50);
   
@@ -73,18 +65,6 @@ void setup() {
   
   // Tenta inicializar e detectar os rádios
   setupRadios();
-
-  // --- Códigos de Status LED ---
-  if (num_radios == 2) {
-    Serial.println("Duas antenas detectadas. Piscar LED 2 vezes.");
-    blinkLED(2, 200); // Pisca 2 vezes para 2 antenas
-  } else if (num_radios == 1) {
-    Serial.println("Uma antena detectada. Piscar LED 1 vez.");
-    blinkLED(1, 200); // Pisca 1 vez para 1 antena
-  } else {
-    Serial.println("Nenhuma antena detectada. Piscar LED rapidamente (erro).");
-    blinkLED(5, 100); // Pisca 5 vezes rapidamente para indicar erro
-  }
 }
 
 // --- Inicialização de um Rádio ---
@@ -167,25 +147,15 @@ void channelSweep() {
   }
 }
 
-// --- Função para Piscar o LED ---
-void blinkLED(int count, int delay_ms) {
-  for (int i = 0; i < count; i++) {
-    digitalWrite(LED_BUILTIN, HIGH);
-    delay(delay_ms);
-    digitalWrite(LED_BUILTIN, LOW);
-    delay(delay_ms);
-  }
-}
-
 // --- Loop Principal (Operação Contínua) ---
 void loop() {
   // Processa o estado do botão
   toggleSwitch.loop();
   
   if (num_radios == 0) {
-    // Se nenhum rádio for detectado, pisca o LED rapidamente para indicar erro
-    blinkLED(1, 100); // Pisca uma vez a cada 100ms
-    delay(500); // Pequeno delay para não sobrecarregar o loop serial e dar tempo para o LED
+    // Se nenhum rádio for detectado, apenas imprime um aviso e espera
+    // Serial.println("Aguardando rádio...");
+    delay(1000); // Pequeno delay para não sobrecarregar o loop serial
     return;
   }
 
