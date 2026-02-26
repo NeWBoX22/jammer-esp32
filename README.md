@@ -9,6 +9,9 @@
 > Este projeto existe por um pedido externo de um conhecido meu. Portanto, provavelmente não haverá mudanças no projeto, visto que já "fiz" tal pedido.
 > O motivo pelo qual fiz este código foi por causa de um erro ao comprar um modelo de ESP32 diferente do que outro código exigia.
 
+> [!IMPORTANT]
+> É crucial entender que este dispositivo, ao operar na banda de 2.4 GHz, não interfere exclusivamente com sinais Bluetooth. A banda de 2.4 GHz é amplamente utilizada por uma variedade de tecnologias sem fio, como: WI-FI, Bluetooth e Outros dispositivos como telefones sem fio, babás eletrônicas, drones e dispositivos IoT. O uso é de total responsabilidade do usuário. não me responsabilizo por quaisquer danos, interferências, prejuízos ou consequências decorrentes da utilização deste sistema.
+
 ## Web Flasher (Instalação Rápida)
 
 A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizando o **Web Flasher** diretamente no seu navegador.
