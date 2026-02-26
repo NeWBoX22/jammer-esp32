@@ -1,97 +1,96 @@
+# ESP32 Jammer - Single or Dual Antennas (nrf24l01)
 
-
-# ESP32 Jammer - Uma ou Duas Antenas
 > [!WARNING]
-> Este código foi construído utilizando Inteligência Artificial e por uma pessoa que não tem conhecimento na área...
-> Possivelmente haverá inconsistências no código que podem não ser percebidas por alguém que não tem conhecimento na área (eu), como trechos do código mal comentados ou redundantes. Caso tenha percebido isso, sinta-se à vontade para enviar uma PR ou relatar uma Issue para o projeto :)
+> This code was built using Artificial Intelligence and by a person who has no knowledge in the area...
+> There may possibly be inconsistencies in the code that may not be perceived by someone who has no knowledge in the area (me), such as poorly commented or redundant code snippets. If you notice this, feel free to send a PR or report an Issue to the project :)
 
 > [!NOTE]
-> Este projeto existe por um pedido externo de um conhecido meu. Portanto, provavelmente não haverá mudanças no projeto, visto que já "fiz" tal pedido.
-> O motivo pelo qual fiz este código foi por causa de um erro ao comprar um modelo de ESP32 diferente do que outro código exigia.
+> This project exists due to an external request from an acquaintance of mine. Therefore, there will probably be no changes to the project, as I have already "fulfilled" this request.
+> The reason I made this code was because of an error when buying a different ESP32 model than another code required.
 
 > [!IMPORTANT]
-> É crucial entender que este dispositivo, ao operar na banda de 2.4 GHz, não interfere exclusivamente com sinais Bluetooth. A banda de 2.4 GHz é amplamente utilizada por uma variedade de tecnologias sem fio, como: WI-FI, Bluetooth e Outros dispositivos como telefones sem fio, babás eletrônicas, drones e dispositivos IoT. O uso é de total responsabilidade do usuário. não me responsabilizo por quaisquer danos, interferências, prejuízos ou consequências decorrentes da utilização deste sistema.
+> It is crucial to understand that this device, operating in the 2.4 GHz band, does not exclusively interfere with Bluetooth signals. The 2.4 GHz band is widely used by a variety of wireless technologies, such as: WI-FI, Bluetooth, and other devices like cordless phones, baby monitors, drones, and IoT devices. Its use is the sole responsibility of the user. I am not responsible for any damages, interferences, losses, or consequences resulting from the use of this system.
 
-## Web Flasher (Instalação Rápida)
+## Web Flasher (Quick Installation)
 
-A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizando o **Web Flasher** diretamente no seu navegador.
+The easiest and fastest way to install the firmware on your ESP32 is by using the **Web Flasher** directly in your browser.
 
-**Requisitos:**
-1.  Um navegador compatível com a API Web Serial (Chrome, Edge, Opera).
-2.  O seu ESP32 conectado ao computador via cabo USB.
+**Requirements:**
+1. A browser compatible with the Web Serial API (Chrome, Edge, Opera).
+2. Your ESP32 connected to the computer via USB cable.
 
-**Instruções:**
-1.  **Acesse o Web Flasher:** [Clique Aqui para Acessar o Web Flasher](https://newbox22.github.io/jammer-esp32/flasher/webflasher.html)
-2.  Clique no botão **"Conectar à Porta Serial"** e selecione a porta serial do seu ESP32.
-3.  Clique no botão **" Gravar Firmware"** e aguarde o processo ser concluído.
+**Instructions:**
+1. **Access the Web Flasher:** [Click Here to Access the Web Flasher](https://newbox22.github.io/jammer-esp32/flasher/webflasher.html)
+2. Click the **"Connect to Serial Port"** button and select your ESP32's serial port.
+3. Click the **"Flash Firmware"** button and wait for the process to complete.
 
 ---
 
-## Diagrama de Fiação
+## Wiring Diagram
 
-O circuito utiliza um ESP32 e dois módulos nRF24L01, cada um com seu respectivo capacitor de desacoplamento para garantir a estabilidade da alimentação.
+The circuit uses an ESP32 and two nRF24L01 modules, each with its respective decoupling capacitor to ensure power stability.
 
-**Link do Projeto Wokwi:** [Clique Aqui!](https://wokwi.com/projects/450785045943583745)
+**Wokwi Project Link:** [Click Here!](https://wokwi.com/projects/450785045943583745)
 
-A imagem a seguir ilustra a fiação completa: 
+The following image illustrates the complete wiring:
 
-![Diagrama de Fiação do ESP32 Jammer](https://github.com/NeWBoX22/jammer-esp32/blob/main/image.png)
+![ESP32 Jammer Wiring Diagram](https://github.com/NeWBoX22/jammer-esp32/blob/main/image.png)
 
-**Atenção:** No diagrama, os módulos nRF24L01 e o ESP32 estão representados pela vista traseira (onde os pinos de contato estão visíveis) para facilitar a visualização das conexões. Certifique-se de conectar os fios aos pinos corretos na montagem física.
+**Attention:** In the diagram, the nRF24L01 modules and the ESP32 are represented from the rear view (where the contact pins are visible) to facilitate the visualization of connections. Make sure to connect the wires to the correct pins in the physical assembly.
 
-## Mapeamento Físico dos Módulos
+## Physical Mapping of Modules
 
-Para garantir que a fiação do diagrama Wokwi corresponda à lógica do código (`main.cpp`), a posição física dos módulos nRF24L01 é importante:
+To ensure that the Wokwi diagram wiring corresponds to the code logic (`main.cpp`), the physical position of the nRF24L01 modules is important:
 
-| Posição no Diagrama | Pinos de Controle (CE/CSN) | Módulo no Código |
+| Position in Diagram | Control Pins (CE/CSN) | Module in Code |
 | :--- | :--- | :--- |
-| **Módulo da Esquerda** | `GPIO16` / `GPIO15` | **Módulo 1** |
-| **Módulo da Direita** | `GPIO4` / `GPIO2` | **Módulo 2** |
+| **Left Module** | `GPIO16` / `GPIO15` | **Module 1** |
+| **Right Module** | `GPIO4` / `GPIO2` | **Module 2** |
 
-**Nota:** Se você deseja inverter a posição física dos módulos, você deve ajustar as definições de pinos no arquivo `src/main.cpp` para que o Módulo 1 (código) corresponda ao módulo que você deseja que seja o principal.
+**Note:** If you want to invert the physical position of the modules, you must adjust the pin definitions in the `src/main.cpp` file so that Module 1 (code) corresponds to the module you want to be the main one.
 
 
-## Conexões de Pinos
+## Pin Connections
 
-As conexões entre o ESP32 e os dois módulos nRF24L01 são idênticas, compartilhando os pinos SPI (SCK, MOSI, MISO) e utilizando pinos GPIO separados para Chip Enable (CE) e Chip Select Not (CSN).
+The connections between the ESP32 and the two nRF24L01 modules are identical, sharing the SPI pins (SCK, MOSI, MISO) and using separate GPIO pins for Chip Enable (CE) and Chip Select Not (CSN).
 
-### 1. Alimentação e Desacoplamento (Capacitores)
+### 1. Power and Decoupling (Capacitors)
 
-É crucial utilizar um capacitor de desacoplamento (tipicamente 10uF a 100uF) em paralelo com a alimentação de cada módulo nRF24L01 para lidar com picos de corrente durante a transmissão.
+It is crucial to use a decoupling capacitor (typically 10uF to 100uF) in parallel with the power supply of each nRF24L01 module to handle current peaks during transmission.
 
-| Componente | Pino | Conexão |
+| Component | Pin | Connection |
 | :--- | :--- | :--- |
-| **ESP32** | `3V3` | VCC (Alimentação 3.3V) |
-| **ESP32** | `GND` | GND (Terra) |
+| **ESP32** | `3V3` | VCC (3.3V Power Supply) |
+| **ESP32** | `GND` | GND (Ground) |
 | **Capacitor Breakout** | `VCC` | nRF24L01 `VCC` |
 | **Capacitor Breakout** | `GND` | nRF24L01 `GND` |
 
-### 2. Módulo nRF24L01 #1 (Chip 1)
+### 2. nRF24L01 Module #1 (Chip 1)
 
-Este módulo utiliza um conjunto de pinos GPIO para controle, compartilhando os pinos SPI padrão do ESP32.
+This module uses a set of GPIO pins for control, sharing the standard ESP32 SPI pins.
 
-| nRF24L01 Pino | ESP32 Pino (GPIO) | Função |
+| nRF24L01 Pin | ESP32 Pin (GPIO) | Function |
 | :--- | :--- | :--- |
-| `VCC` | `3V3` | Alimentação 3.3V |
-| `GND` | `GND` | Terra |
+| `VCC` | `3V3` | 3.3V Power Supply |
+| `GND` | `GND` | Ground |
 | `CE` | `GPIO16` (RX2) | Chip Enable |
 | `CSN` | `GPIO15` (D15) | Chip Select Not |
 | `SCK` | `GPIO14` (D14) | Serial Clock (SPI) |
 | `MOSI` | `GPIO13` (D13) | Master Out Slave In (SPI) |
 | `MISO` | `GPIO12` (D12) | Master In Slave Out (SPI) |
-| `IRQ` | **Não Conectado** | Interrupção |
+| `IRQ` | **Not Connected** | Interrupt |
 
-### 3. Módulo nRF24L01 #2 (Chip 2)
+### 3. nRF24L01 Module #2 (Chip 2)
 
-Este módulo compartilha os pinos SPI (SCK, MOSI, MISO) com o Módulo #1, mas utiliza um conjunto diferente de pinos GPIO para CE e CSN.
+This module shares the SPI pins (SCK, MOSI, MISO) with Module #1, but uses a different set of GPIO pins for CE and CSN.
 
-| nRF24L01 Pino | ESP32 Pino (GPIO) | Função |
+| nRF24L01 Pin | ESP32 Pin (GPIO) | Function |
 | :--- | :--- | :--- |
-| `VCC` | `3V3` | Alimentação 3.3V |
-| `GND` | `GND` | Terra |
+| `VCC` | `3V3` | 3.3V Power Supply |
+| `GND` | `GND` | Ground |
 | `CE` | `GPIO4` (D4) | Chip Enable |
 | `CSN` | `GPIO2` (D2) | Chip Select Not |
 | `SCK` | `GPIO14` (D14) | Serial Clock (SPI) |
 | `MOSI` | `GPIO13` (D13) | Master Out Slave In (SPI) |
 | `MISO` | `GPIO12` (D12) | Master In Slave Out (SPI) |
-| `IRQ` | **Não Conectado** | Interrupção |
+| `IRQ` | **Not Connected** | Interrupt |
