@@ -1,8 +1,15 @@
-# ESP32 Jammer (Dual nRF24L01)
 
-Este projeto implementa um Jammer utilizando um módulo ESP32 e dois transceptores nRF24L01, conforme o diagrama de fiação do Wokwi.
 
-## 🚀 Web Flasher (Instalação Rápida)
+# ESP32 Jammer - Uma ou Duas Antenas
+> [!WARNING]
+> Este código foi construído utilizando Inteligência Artificial e por uma pessoa que não tem conhecimento na área...
+> Possivelmente haverá inconsistências no código que podem não ser percebidas por alguém que não tem conhecimento na área (eu), como trechos do código mal comentados ou redundantes. Caso tenha percebido isso, sinta-se à vontade para enviar uma PR ou relatar uma Issue para o projeto :)
+
+> [!NOTE]
+> Este projeto existe por um pedido externo de um conhecido meu. Portanto, provavelmente não haverá mudanças no projeto, visto que já "fiz" tal pedido.
+> O motivo pelo qual fiz este código foi por causa de um erro ao comprar um modelo de ESP32 diferente do que outro código exigia.
+
+## Web Flasher (Instalação Rápida)
 
 A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizando o **Web Flasher** diretamente no seu navegador.
 
@@ -12,8 +19,8 @@ A maneira mais fácil e rápida de instalar o firmware no seu ESP32 é utilizand
 
 **Instruções:**
 1.  **Acesse o Web Flasher:** [Clique Aqui para Acessar o Web Flasher](https://newbox22.github.io/jammer-esp32/flasher/webflasher.html)
-2.  Clique no botão **"🔌 Conectar à Porta Serial"** e selecione a porta serial do seu ESP32.
-3.  Clique no botão **"📥 Gravar Firmware"** e aguarde o processo ser concluído.
+2.  Clique no botão **"Conectar à Porta Serial"** e selecione a porta serial do seu ESP32.
+3.  Clique no botão **" Gravar Firmware"** e aguarde o processo ser concluído.
 
 ---
 
